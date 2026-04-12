@@ -19,7 +19,24 @@ input {width:100%; padding:10px;}
 </head>
 
 <body>
+<h2>📝 发布信息</h2>
 
+<div style="border:1px solid #ddd;padding:10px;margin:10px;">
+
+  <input id="title" placeholder="输入标题" style="width:100%;padding:8px;"><br><br>
+
+  <input id="price" placeholder="输入价格" style="width:100%;padding:8px;"><br><br>
+
+  <input id="contact" placeholder="联系方式" style="width:100%;padding:8px;"><br><br>
+
+  <button onclick="post()" style="padding:10px;background:blue;color:white;">
+    发布
+  </button>
+
+</div>
+
+<h3>📌 发布列表</h3>
+<div id="list"></div>
 <div class="header">
 <h2>🌍 非洲通</h2>
 <p>在非洲的中国人信息平台</p >
@@ -97,7 +114,18 @@ input {width:100%; padding:10px;}
 </div>
 
 <script>
+async function post(){
+  let title = document.getElementById('title').value;
+  let price = document.getElementById('price').value;
+  let contact = document.getElementById('contact').value;
 
+  const { data, error } = await supabase
+    .from('houses')
+    .insert([{ title, price, contact }]);
+
+  alert("发布成功！");
+  loadData();
+}
 function show(id){
 document.getElementById('house').classList.add('hidden');
 document.getElementById('job').classList.add('hidden');
