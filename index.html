@@ -1,251 +1,71 @@
-Win + Rnotepad
+
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>非洲通 - 华人信息平台</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<style>
-body {font-family: Arial; margin:0; background:#f5f5f5;}
-.header {background:#007bff; color:white; padding:15px; text-align:center;}
-.search {padding:10px;}
-input {width:100%; padding:10px;}
-.nav {display:flex; justify-content:space-around; background:white; padding:10px;}
-.nav div {padding:10px; cursor:pointer;}
-.box {background:white; margin:10px; padding:10px; border-radius:8px;}
-.btn {background:#007bff; color:white; padding:8px; display:inline-block; margin-top:5px; cursor:pointer;}
-.hidden {display:none;}
-</style>
+  <title>非洲信息平台</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
-<h1>TEST-123</h1>
-  <h1>TEST</h1>
+
 <body>
+
+<h1>🌍 非洲信息平台</h1>
+
 <h2>📝 发布信息</h2>
-
-<div style="border:1px solid #ddd;padding:10px;margin:10px;">
-
-  <input id="title" placeholder="输入标题" style="width:100%;padding:8px;"><br><br>
-
-  <input id="price" placeholder="输入价格" style="width:100%;padding:8px;"><br><br>
-
-  <input id="contact" placeholder="联系方式" style="width:100%;padding:8px;"><br><br>
-
-  <button onclick="post()" style="padding:10px;background:blue;color:white;">
-    发布
-  </button>
-
-</div>
-
-<h3>📌 发布列表</h3>
-<div id="list"></div>
-<div class="header">
-<h2>🌍 非洲通</h2>
-<p>在非洲的中国人信息平台</p >
-</div>
-
-<div class="search">
-<input id="searchInput" placeholder="搜索：租房 / 招聘 / 服务" onkeyup="search()">
-</div>
-
-<div class="nav">
-<div onclick="show('house')">🏠租房</div>
-<div onclick="show('job')">👷招聘</div>
-<div onclick="show('service')">🚚服务</div>
-<div onclick="show('post')">📝发布</div>
-</div>
-
-<!-- 租房 -->
-<div id="house">
-
-<div class="box">
-🏠 市中心公寓<br>
-💰 5000元/月<br>
-📍 达喀尔<br>
-📞 微信：abc123
-</div>
-
-<div class="box">
-🏠 华人区单间<br>
-💰 3000元/月<br>
-📍 达喀尔<br>
-📞 微信：xyz888
-</div>
-
-</div>
-
-<!-- 招聘 -->
-<div id="job" class="hidden">
-
-<div class="box">
-👷 招法语翻译<br>
-💰 面议<br>
-📍 达喀尔<br>
-📞 微信：aaa111
-</div>
-
-<div class="box">
-👷 招司机<br>
-💰 4000-6000<br>
-📞 微信：bbb222
-</div>
-
-</div>
-
-<!-- 服务 -->
-<div id="service" class="hidden">
-
-<div class="box">
-🚚 清关物流服务<br>
-✔ 中国→非洲<br>
-📞 微信：ccc333
-</div>
-
-</div>
-
-<!-- 发布 -->
-<div id="post" class="hidden">
-
-<div class="box">
-<h3>发布信息（示例）</h3>
-<input placeholder="标题"><br><br>
-<input placeholder="联系方式"><br><br>
-<button class="btn">提交（暂未接入数据库）</button>
-</div>
-
-</div>
-
-<script>
-async function post(){
-  let title = document.getElementById('title').value;
-  let price = document.getElementById('price').value;
-  let contact = document.getElementById('contact').value;
-
-  const { data, error } = await supabase
-    .from('houses')
-    .insert([{ title, price, contact }]);
-
-  alert("发布成功！");
-  loadData();
-}
-function show(id){
-document.getElementById('house').classList.add('hidden');
-document.getElementById('job').classList.add('hidden');
-document.getElementById('service').classList.add('hidden');
-document.getElementById('post').classList.add('hidden');
-document.getElementById(id).classList.remove('hidden');
-}
-
-function search(){
-let val = document.getElementById('searchInput').value;
-let boxes = document.getElementsByClassName('box');
-
-for(let i=0;i<boxes.length;i++){
-let text = boxes[i].innerText;
-if(text.includes(val)){
-boxes[i].style.display = '';
-}else{
-boxes[i].style.display = 'none';
-}
-}
-}
-
-</script>
-<script>
-
-let data = [];
-
-async function post(){
-
-  let title = document.getElementById('title').value;
-  let price = document.getElementById('price').value;
-  let contact = document.getElementById('contact').value;
-
-  const { data, error } = await supabase
-    .from('houses')
-    .insert([
-      {
-        title: title,
-        price: price,
-        contact: contact
-      }
-    ]);
-
-  if(error){
-    alert("发布失败：" + error.message);
-    return;
-  }
-
-  alert("发布成功！");
-
-  loadData(); // 刷新列表
-}
-function render(){
-    let html = "";
-
-    for(let i=0;i<data.length;i++){
-        html += `
-        <div style="border:1px solid #ddd; margin:10px; padding:10px;">
-        【${data[i].type}】<br>
-        ${data[i].title}<br>
-        ${data[i].price}<br>
-        📞 ${data[i].contact}
-        </div>
-        `;
-    }
-
-    document.getElementById("list").innerHTML = html;
-}
-
-</script>async function loadData(){
-
-  const { data, error } = await supabase
-    .from('houses')
-    .select('*')
-    .order('id', { ascending: false });
-
-  if(error){
-    console.log(error);
-    return;
-  }
-
-  let html = "";
-
-  data.forEach(item => {
-    html += `
-      <div style="border:1px solid #ddd;margin:10px;padding:10px;">
-        🏠 ${item.title}<br>
-        💰 ${item.price}<br>
-        📞 ${item.contact}
-      </div>
-    `;
-  });
-
-  document.getElementById("list").innerHTML = html;
-}
-
-loadData();
-</body>
-</html>
-<h2>📝 发布信息</h2>
-
-<select id="type">
-  <option value="house">租房</option>
-  <option value="job">招聘</option>
-  <option value="service">服务</option>
-</select>
-
-<br><br>
 
 <input id="title" placeholder="标题"><br><br>
-<input id="price" placeholder="价格/薪资"><br><br>
+<input id="price" placeholder="价格"><br><br>
 <input id="contact" placeholder="联系方式"><br><br>
 
 <button onclick="post()">发布</button>
 
 <hr>
 
-<h3>📌 发布列表</h3>
-<div id="list"></div>const supabaseUrl = "https://qomnfxajlprecoodbglm.supabase.co";
-const supabaseKey = "sb_publishable_D4aBPB66bpIm9b3fEvZuug_w7-t-_03";
+<h3>📌 信息列表</h3>
+<div id="list"></div>
 
+<script>
+const supabaseUrl = "https://qomnfxajlprecoodbglm.supabase.co";
+const supabaseKey = "sb_publishable_D4aBPB66bpIm9b3fEvZuug_w7-t-_03";
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function post(){
+  let title = document.getElementById('title').value;
+  let price = document.getElementById('price').value;
+  let contact = document.getElementById('contact').value;
+
+  const { error } = await supabase
+    .from('houses')
+    .insert([{ title, price, contact }]);
+
+  if(error){
+    alert("失败：" + error.message);
+    return;
+  }
+
+  alert("发布成功！");
+  loadData();
+}
+
+async function loadData(){
+  let { data } = await supabase
+    .from('houses')
+    .select('*')
+    .order('id', { ascending: false });
+
+  let html = "";
+  data.forEach(item => {
+    html += `<div>
+      🏠 ${item.title}<br>
+      💰 ${item.price}<br>
+      📞 ${item.contact}
+    </div><hr>`;
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+loadData();
+</script>
+
+</body>
+</html>
